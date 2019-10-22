@@ -1,0 +1,29 @@
+ //Unity Scripts .CS
+ 
+ //Create a RenderTexture in Unity and Set RenderTexture GraphicsFormat to R8G8B8A8_UNorm
+ RenderTexture renderTexture = new RenderTexture(1920, 1080, 24, GraphicsFormat.R8G8B8A8_UNorm);
+ //Call Plugin API
+ Plugin.CreateFrame( renderTexture.GetNativeTexturePtr(),renderTexture.width,renderTexture.height);
+ 
+ 
+ //Native Plugin Scripts .cpp
+ 
+ void RenderAPI_D3D11::CreateFrame(void * RenderTexureId, int Width, int Height)
+{
+	ID3D11ShaderResourceView* RT=nullptr;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+	desc.Texture2D.MipLevels = 1;
+
+	auto hr = m_Device->CreateShaderResourceView((ID3D11Resource*)RenderTexureId, &desc, &RT);
+	if (RT == nullptr)
+	{
+		MessageBox(NULL, L" mRenderTargetViewLeft is null", L"SetShaderResourceView RTVFromRenderBuffer", MB_OK);
+	}
+  //To Do What you want to Render Objects
+  //.....
+ }
